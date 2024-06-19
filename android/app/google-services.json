@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "178459381037",
+    "project_id": "zelda-fly",
+    "storage_bucket": "zelda-fly.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:178459381037:android:bda66d207bb48dfd9f17a4",
+        "android_client_info": {
+          "package_name": "com.zeldafly.zeldafly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkCCypws0tqMJtX9gbZNd3LdA2W2IYWcg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
