@@ -101,7 +101,7 @@ class _GameOverScreenState extends State<GameOverScreen> {
     try {
       var result = await firestore.collection('userinfo').get();
       for (var doc in result.docs) {
-        if (loggedUser != null && loggedUser!.email == doc['email']) {
+        if (loggedUser != null && loggedUser!.email == doc['email'] && doc['score'] < myscore) {
           await firestore
               .collection('userinfo')
               .doc(doc.id)

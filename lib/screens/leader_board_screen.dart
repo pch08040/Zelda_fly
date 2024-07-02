@@ -31,32 +31,6 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
     getData();
   }
 
-  void getData() async {
-  try {
-    var result = await firestore
-        .collection('userinfo')
-        .orderBy('score', descending: true)
-        .limit(7)
-        .get();
-
-    setState(() {
-      Leaderboard.clear(); // 기존 데이터 초기화 시켜야 중복 방지됨
-      for (var doc in result.docs) {
-        Leaderboard.add({
-          'name': doc['name'],
-          'score': doc['score'],
-        });
-
-        userName = doc['name'];
-        userScore = doc['score'];
-      }
-    });
-
-  } catch (e) {
-    print(e);
-  }
-}
-
   void getCurrentUser() {
     try {
       final user = _authentication.currentUser;
@@ -68,6 +42,45 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
       print(e);
     }
   }
+
+  void getData() async {
+    try {
+      var result = await firestore
+          .collection('userinfo')
+          .orderBy('score', descending: true)
+          .limit(7)
+          .get();
+
+      setState(() {
+        Leaderboard.clear(); // 기존 데이터 초기화 시켜야 중복 방지됨
+        for (var doc in result.docs) {
+          Leaderboard.add({
+            'name': doc['name'],
+            'score': doc['score'],
+          });
+
+          if (loggedUser!.email == doc['email']) {
+            userName = doc['name'];
+            userScore = doc['score'];
+          }
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // void getCurrentUser() {
+  //   try {
+  //     final user = _authentication.currentUser;
+  //     if (user != null) {
+  //       loggedUser = user;
+  //       print(loggedUser!.email);
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   // void sortboard() {
   //   var result = await firestore.collection('userinfo').get();
@@ -96,7 +109,7 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
             left: 0,
             child: Center(
               child: Text(
-                '${userName}의 점수 ${userScore}',
+                '${userName}의 점수 ${userScore ?? 0}',
                 style: TextStyle(
                   fontSize: 40,
                   color: Colors.black,
@@ -160,9 +173,15 @@ class _LeaderBoardScreenState extends State<LeaderBoardScreen> {
             child: Center(
               child: TextButton(
                 onPressed: () {
-                  _authentication.signOut();
-                  widget.game.overlays.remove('leaderBoard');
-                  widget.game.overlays.add('mainMenu');
+                  if (loggedUser != null) {
+                    _authentication.signOut().then((_) {
+                      setState(() {
+                        loggedUser = null;
+                      });
+                      widget.game.overlays.remove('leaderBoard');
+                      widget.game.overlays.add('mainMenu');
+                    });
+                  }
                 },
                 child: Text(
                   '로그아웃',
